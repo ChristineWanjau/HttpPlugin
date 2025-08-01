@@ -1,0 +1,67 @@
+{
+  "pluginName": "code_snippet_generator_plugin",
+  "allowedClients": [
+    "VSCode",
+    "WebBrowser",
+    "APIClient"
+  ],
+  "isLKG": false,
+  "icm": {
+    "service": "Code Generation Services",
+    "team": "Development Tools",
+    "teamId": "CODEGEN001"
+  },
+  "manifest": {
+    "version": "1.0",
+    "schema_version": "v1",
+    "name_for_human": "code_snippet_generator_plugin",
+    "description_for_human": "Generating code snippets based on configuration and language...",
+    "functions": [
+      {
+        "name": "generate_code_snippet",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "config": {
+              "description": "Configuration object that contains all the settings and parameters for code generation",
+              "type": "object"
+            },
+            "language": {
+              "description": "Programming language for the code snippet",
+              "type": "string"
+            }
+          },
+          "required": ["config", "language"]
+        },
+        "states": {
+          "reasoning": {
+            "description": "Can generate code snippets based on a configuration object and target programming language. Simple and flexible approach.",
+            "examples": [
+              "Generate JavaScript code from config object",
+              "Create Python code based on configuration",
+              "Generate code snippet for any language with config"
+            ]
+          }
+        }
+      }
+    ],
+    "runtimes": [
+      {
+        "type": "Http",
+        "auth": {
+          "scopes": ["https://api.codegen.local/.default"],
+          "type": "EntraClientCredentials"
+        },
+        "spec": [
+          {
+            "dataBoundary": "ROW",
+            "url": "http://localhost:3000/generate",
+            "http_method": "POST",
+            "script": "function EvaluateHttpPluginPayLoad(response) local config = response and response.config or {} local language = response and response.language or 'javascript' return { config = config, language = language, timestamp = os.date('%Y-%m-%d %H:%M:%S') } end"
+          }
+        ],
+        "run_for_functions": ["generate_code_snippet"]
+      }
+    ]
+  }
+}
